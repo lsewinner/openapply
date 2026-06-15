@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenApply — Merit + Fit</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', Arial, sans-serif; background: #fff; color: #0D0D0D; }
+
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 99; background: rgba(255,255,255,0.97); border-bottom: 1px solid #eee; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
+.logo { display: flex; align-items: baseline; gap: 8px; }
+.logo-oa { font-size: 24px; font-weight: 900; color: #F47C00; letter-spacing: -1px; }
+.logo-name { font-size: 13px; font-weight: 700; letter-spacing: 3px; }
+.logo-tag { font-size: 10px; letter-spacing: 3px; color: #999; display: block; }
+.lang-btn { display: flex; border: 1.5px solid #0D0D0D; border-radius: 3px; overflow: hidden; }
+.lang-btn button { padding: 5px 14px; font-size: 12px; font-weight: 600; border: none; cursor: pointer; background: transparent; color: #999; }
+.lang-btn button.on { background: #0D0D0D; color: #fff; }
+
+/* HERO */
+.hero { min-height: 100vh; background: #0D0D0D; display: flex; flex-direction: column; justify-content: center; padding: 120px 40px 80px; position: relative; overflow: hidden; }
+.hero-bg { position: absolute; right: -40px; top: 50%; transform: translateY(-50%); font-size: 380px; font-weight: 900; color: transparent; -webkit-text-stroke: 1px rgba(244,124,0,0.15); line-height: 1; pointer-events: none; }
+.hero-label { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+.hero-line { width: 30px; height: 2px; background: #F47C00; }
+.hero-label span { font-size: 11px; font-weight: 700; letter-spacing: 3px; color: #F47C00; }
+.hero h1 { font-size: clamp(36px, 5.5vw, 68px); font-weight: 700; color: #fff; line-height: 1.15; margin-bottom: 24px; max-width: 680px; }
+.hero h1 em { font-style: normal; color: #F47C00; }
+.hero p { font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.8; max-width: 520px; margin-bottom: 44px; }
+.hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-o { padding: 15px 34px; background: #F47C00; color: #fff; font-size: 14px; font-weight: 600; letter-spacing: 1px; border: none; border-radius: 3px; cursor: pointer; text-decoration: none; display: inline-block; }
+.btn-g { padding: 15px 34px; background: transparent; color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 500; border: 1.5px solid rgba(255,255,255,0.25); border-radius: 3px; cursor: pointer; text-decoration: none; display: inline-block; }
+.hero-stats { display: flex; gap: 40px; margin-top: 64px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; }
+.stat-num { font-size: 22px; font-weight: 700; color: #F47C00; }
+.stat-lbl { font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+/* SECTION */
+section { padding: 88px 40px; }
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 3px; color: #F47C00; margin-bottom: 16px; }
+.sec-title { font-size: clamp(26px, 3.5vw, 42px); font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+.sec-body { font-size: 15px; line-height: 1.8; color: #666; max-width: 540px; }
+
+/* COMPARE */
+.compare { background: #F5F5F3; }
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 52px; }
+.col-tag { display: inline-block; padding: 4px 14px; font-size: 11px; font-weight: 700; letter-spacing: 2px; border-radius: 2px; margin-bottom: 20px; }
+.col-tag.old { background: rgba(0,0,0,0.08); color: #888; }
+.col-tag.new { background: #F47C00; color: #fff; }
+.item { padding: 16px 0; border-bottom: 1px solid rgba(0,0,0,0.07); font-size: 14px; line-height: 1.6; display: flex; gap: 10px; align-items: flex-start; }
+.item.x { color: #aaa; text-decoration: line-through; }
+.item .ic { flex-shrink: 0; font-style: normal; margin-top: 1px; }
+
+/* HOW */
+.how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 52px; }
+.how-card { padding: 32px 24px; border: 1px solid #e8e8e8; border-radius: 4px; transition: border-color 0.2s; }
+.how-card:hover { border-color: #F47C00; }
+.how-n { font-size: 44px; font-weight: 900; color: rgba(244,124,0,0.12); line-height: 1; margin-bottom: 14px; }
+.how-t { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.how-b { font-size: 13px; line-height: 1.7; color: #777; }
+.how-card.accent { background: #F47C00; border-color: #F47C00; }
+.how-card.accent .how-n { color: rgba(255,255,255,0.2); }
+.how-card.accent .how-t { color: #fff; font-size: 18px; }
+.how-card.accent .how-b { color: rgba(255,255,255,0.75); }
+
+/* MENTOR */
+.mentor { background: #0D0D0D; }
+.mentor .sec-title { color: #fff; }
+.mentor .sec-body { color: rgba(255,255,255,0.5); }
+.tags { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 44px; }
+.tag { padding: 9px 20px; border: 1px solid rgba(255,255,255,0.15); border-radius: 2px; font-size: 13px; color: rgba(255,255,255,0.65); }
+
+/* REGISTER */
+.register { background: #F47C00; text-align: center; }
+.register .sec-title { color: #fff; }
+.register .sec-body { color: rgba(255,255,255,0.8); margin: 0 auto 40px; text-align: center; }
+.form { display: flex; gap: 10px; justify-content: center; max-width: 480px; margin: 0 auto 14px; flex-wrap: wrap; }
+.form input { flex: 1; min-width: 200px; padding: 15px 18px; font-size: 14px; border: none; border-radius: 3px; background: rgba(0,0,0,0.15); color: #fff; outline: none; }
+.form input::placeholder { color: rgba(255,255,255,0.5); }
+.btn-dark { padding: 15px 28px; background: #0D0D0D; color: #fff; font-size: 14px; font-weight: 600; border: none; border-radius: 3px; cursor: pointer; white-space: nowrap; }
+.note { font-size: 12px; color: rgba(255,255,255,0.6); }
+
+/* FOOTER */
+footer { padding: 36px 40px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.f-brand { font-size: 15px; font-weight: 700; letter-spacing: 2px; }
+.f-sub { font-size: 10px; letter-spacing: 3px; color: #999; }
+.f-copy { font-size: 12px; color: #aaa; }
+
+/* MOBILE */
+@media (max-width: 700px) {
+  nav, .hero, section, footer { padding-left: 20px; padding-right: 20px; }
+  .compare-grid, .how-grid { grid-template-columns: 1fr; }
+  .hero-bg { font-size: 160px; }
+  .hero-stats { gap: 24px; }
+}
+
+/* LANG */
+html[lang="en"] .zh { display: none; }
+html[lang="zh"] .en { display: none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <span class="logo-oa">OA</span>
+    <div>
+      <span class="logo-name">OPEN APPLY</span>
+      <span class="logo-tag">MERIT + FIT</span>
+    </div>
+  </div>
+  <div class="lang-btn">
+    <button class="on" onclick="setLang('zh')">中文</button>
+    <button onclick="setLang('en')">EN</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-bg">OA</div>
+  <div class="hero-label">
+    <div class="hero-line"></div>
+    <span class="zh">AI 驱动 · 名校导师背书</span>
+    <span class="en">AI-POWERED · ELITE MENTORS</span>
+  </div>
+  <h1>
+    <span class="zh">凭真实实力，<br>申请<em>你真正匹配</em>的名校</span>
+    <span class="en">Apply to the right school<br>with <em>your real merit</em></span>
+  </h1>
+  <p class="zh">OpenApply 以 AI 为核心、名校导师为背书，提供从评估到录取的全流程支持——不包装，不造假，只帮你找到真正匹配的学校。</p>
+  <p class="en">OpenApply combines AI assessment with mentors from Oxford, Cambridge, Harvard and MIT — no fabrication, no templates, just genuine fit.</p>
+  <div class="hero-btns">
+    <a href="#register" class="btn-o zh">立即开始评估</a>
+    <a href="#register" class="btn-o en">Start Free Assessment</a>
+    <a href="#how" class="btn-g zh">了解更多</a>
+    <a href="#how" class="btn-g en">Learn More</a>
+  </div>
+  <div class="hero-stats">
+    <div><div class="stat-num">牛津 · 剑桥</div><div class="stat-lbl zh">导师院校</div><div class="stat-lbl en">MENTOR SCHOOLS</div></div>
+    <div><div class="stat-num">AI + 人工</div><div class="stat-lbl zh">双重评估</div><div class="stat-lbl en">DUAL REVIEW</div></div>
+    <div><div class="stat-num">全流程</div><div class="stat-lbl zh">评估到录取</div><div class="stat-lbl en">END TO END</div></div>
+  </div>
+</div>
+
+<section class="compare">
+  <div class="eyebrow zh">我们为何不同</div>
+  <div class="eyebrow en">WHY WE'RE DIFFERENT</div>
+  <h2 class="sec-title zh">拒绝流水线式包装</h2>
+  <h2 class="sec-title en">No Assembly-Line Packaging</h2>
+  <div class="compare-grid">
+    <div>
+      <span class="col-tag old zh">传统中介</span>
+      <span class="col-tag old en">TRADITIONAL AGENTS</span>
+      <div class="item x"><span class="ic">✗</span><span class="zh">模板化文书，千人一面</span><span class="en">Templated essays, zero originality</span></div>
+      <div class="item x"><span class="ic">✗</span><span class="zh">背景虚构与过度包装</span><span class="en">Fabricated backgrounds</span></div>
+      <div class="item x"><span class="ic">✗</span><span class="zh">依赖顾问个人经验</span><span class="en">Dependent on one consultant</span></div>
+      <div class="item x"><span class="ic">✗</span><span class="zh">信息不透明，结果无法验证</span><span class="en">Opaque process, unverifiable results</span></div>
+    </div>
+    <div>
+      <span class="col-tag new">OPENAPPLY</span>
+      <div class="item"><span class="ic" style="color:#F47C00">✓</span><span class="zh">AI 辅助，真实表达你的声音</span><span class="en">AI-assisted, authentic voice</span></div>
+      <div class="item"><span class="ic" style="color:#F47C00">✓</span><span class="zh">基于真实数据的能力评估</span><span class="en">Merit-based, real admissions data</span></div>
+      <div class="item"><span class="ic" style="color:#F47C00">✓</span><span class="zh">平台标准 + 名校导师精修</span><span class="en">Platform + top-school mentor review</span></div>
+      <div class="item"><span class="ic" style="color:#F47C00">✓</span><span class="zh">全流程透明，数据驱动决策</span><span class="en">Full transparency, data-driven</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="eyebrow zh">申请流程</div>
+  <div class="eyebrow en">HOW IT WORKS</div>
+  <h2 class="sec-title zh">五步，从评估到录取</h2>
+  <h2 class="sec-title en">Five Steps to Your Offer</h2>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-n">01</div>
+      <div class="how-t zh">AI 能力评估</div>
+      <div class="how-t en">AI Assessment</div>
+      <div class="how-b zh">分析学术背景、经历与方向，生成客观能力图谱。</div>
+      <div class="how-b en">Analyse your background and goals to generate an objective capability profile.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-n">02</div>
+      <div class="how-t zh">智能学校匹配</div>
+      <div class="how-t en">Smart School Matching</div>
+      <div class="how-b zh">基于真实录取数据，推荐最适合的院校与专业。</div>
+      <div class="how-b en">Real admissions data drives our school and programme recommendations.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-n">03</div>
+      <div class="how-t zh">文书 AI + 导师精修</div>
+      <div class="how-t en">Essay AI + Mentor Polish</div>
+      <div class="how-b zh">AI 辅助起草，牛剑哈佛导师人工精修，质量与诚信并重。</div>
+      <div class="how-b en">AI drafts, Oxford/Cambridge/Harvard mentors refine. Quality and integrity.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-n">04</div>
+      <div class="how-t zh">申请追踪</div>
+      <div class="how-t en">Application Tracking</div>
+      <div class="how-b zh">全程追踪申请进度，提供实时反馈与结果分析。</div>
+      <div class="how-b en">Track every application in real time with outcome analytics.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-n">05</div>
+      <div class="how-t zh">录取后发展</div>
+      <div class="how-t en">Post-Admission Support</div>
+      <div class="how-b zh">学业辅导、职业规划、当地就业网络，帮你真正站稳脚跟。</div>
+      <div class="how-b en">Academic coaching, career planning, and local employment networks.</div>
+    </div>
+    <div class="how-card accent">
+      <div class="how-n">OA</div>
+      <div class="how-t">Merit + Fit</div>
+      <div class="how-b zh">凭实力申请，找到真正匹配的学校。</div>
+      <div class="how-b en">Apply on merit. Find your true fit.</div>
+    </div>
+  </div>
+</section>
+
+<section class="mentor">
+  <div class="eyebrow">MENTOR NETWORK</div>
+  <h2 class="sec-title zh">来自世界顶尖院校的导师团队</h2>
+  <h2 class="sec-title en">Mentors from the World's Top Universities</h2>
+  <p class="sec-body zh">我们的导师均毕业于全球顶尖院校，深度参与每一位学生的申请全程。</p>
+  <p class="sec-body en">Our mentors are graduates of the world's leading universities, deeply involved in each student's journey.</p>
+  <div class="tags">
+    <div class="tag">University of Oxford</div>
+    <div class="tag">University of Cambridge</div>
+    <div class="tag">Harvard University</div>
+    <div class="tag">MIT</div>
+    <div class="tag">Imperial College London</div>
+    <div class="tag">LSE</div>
+    <div class="tag">Stanford University</div>
+    <div class="tag">UCL</div>
+  </div>
+</section>
+
+<section class="register" id="register">
+  <div class="eyebrow" style="color:rgba(255,255,255,0.7)">
+    <span class="zh">免费开始</span><span class="en">GET STARTED FREE</span>
+  </div>
+  <h2 class="sec-title zh">开始你的 AI 能力评估</h2>
+  <h2 class="sec-title en">Begin Your AI Assessment</h2>
+  <p class="sec-body zh">填写邮箱，免费获取能力评估报告与学校匹配建议。</p>
+  <p class="sec-body en">Enter your email for a free capability report and school-match recommendations.</p>
+  <div class="form">
+    <input type="email" id="em" placeholder="your@email.com">
+    <button class="btn-dark" onclick="reg()">
+      <span class="zh">立即注册</span><span class="en">Register Now</span>
+    </button>
+  </div>
+  <div class="note zh">注册即同意隐私政策 · 伦敦 · 杭州</div>
+  <div class="note en">By registering you agree to our Privacy Policy · London · Hangzhou</div>
+</section>
+
+<footer>
+  <div>
+    <div class="f-brand">OPEN APPLY</div>
+    <div class="f-sub">MERIT + FIT</div>
+  </div>
+  <div class="f-copy">
+    <span class="zh">© 2025 OpenApply · 伦敦 · 杭州余杭</span>
+    <span class="en">© 2025 OpenApply · London · Hangzhou</span>
+  </div>
+</footer>
+
+<script>
+function setLang(l) {
+  document.documentElement.lang = l;
+  document.querySelectorAll('.lang-btn button').forEach((b,i) => b.classList.toggle('on', (l==='zh'&&i===0)||(l==='en'&&i===1)));
+}
+function reg() {
+  var e = document.getElementById('em').value.trim();
+  var l = document.documentElement.lang;
+  if (!e || !e.includes('@')) { alert(l==='zh'?'请输入有效邮箱':'Please enter a valid email.'); return; }
+  alert(l==='zh'?'✓ 感谢注册！我们将发送报告至 '+e:'✓ Thank you! Report will be sent to '+e);
+  document.getElementById('em').value='';
+}
+</script>
+</body>
+</html>
