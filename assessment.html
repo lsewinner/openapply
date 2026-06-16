@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenApply — 能力与匹配评估 / Capability & Fit Assessment</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --orange: #F47C00; --orange-dark: #e06e00;
+  --black: #0D0D0D; --white: #fff;
+  --gray-bg: #F7F7F5; --line: rgba(0,0,0,0.09);
+  --text: #555; --muted: #999;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+  background: var(--gray-bg); color: var(--black); line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* language visibility */
+html[lang="en"] .zh { display: none; }
+html[lang="zh"] .en { display: none; }
+
+/* LANG TOGGLE — same as landing */
+.lang-toggle { position: fixed; top: 20px; right: 24px; z-index: 200; display: flex; border: 1.5px solid var(--black); border-radius: 2px; overflow: hidden; background: var(--white); }
+.lang-toggle button { padding: 5px 14px; font-size: 11px; font-weight: 700; letter-spacing: 1px; border: none; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.2s; }
+.lang-toggle button.on { background: var(--black); color: var(--white); }
+
+/* HEADER BAR */
+.topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.96); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); height: 60px; display: flex; align-items: center; padding: 0 24px; }
+.brand { display: flex; align-items: baseline; gap: 9px; }
+.brand-oa { font-size: 19px; font-weight: 900; color: var(--orange); letter-spacing: -1px; }
+.brand-name { font-size: 11px; font-weight: 700; letter-spacing: 3px; }
+
+/* PROGRESS */
+.progress-wrap { position: fixed; top: 60px; left: 0; right: 0; z-index: 99; background: var(--white); border-bottom: 1px solid var(--line); padding: 14px 24px; }
+.progress-track { max-width: 720px; margin: 0 auto; }
+.progress-bar { height: 3px; background: #e8e8e3; border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; width: 0%; background: var(--orange); transition: width 0.4s ease; }
+.progress-label { font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-top: 8px; text-transform: uppercase; font-weight: 700; }
+
+/* STAGE / CONTAINER */
+.stage { max-width: 720px; margin: 0 auto; padding: 150px 24px 120px; }
+.step { display: none; animation: fade 0.4s ease; }
+.step.active { display: block; }
+@keyframes fade { from { opacity: 0; transform: translateY(12px);} to {opacity:1; transform:translateY(0);} }
+
+/* INTRO (dark) */
+.intro { background: var(--black); color: var(--white); border-radius: 4px; padding: 56px 44px; position: relative; overflow: hidden; }
+.intro::before { content:''; position:absolute; inset:0; background-image: linear-gradient(rgba(244,124,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(244,124,0,0.05) 1px, transparent 1px); background-size: 48px 48px; pointer-events:none; }
+.intro-eyebrow { display:inline-flex; align-items:center; gap:10px; margin-bottom: 24px; position: relative; }
+.intro-line { width: 26px; height: 1.5px; background: var(--orange); }
+.eyebrow-txt { font-size: 10px; font-weight: 700; letter-spacing: 4px; color: var(--orange); text-transform: uppercase; }
+.intro h1 { font-size: clamp(28px, 4.6vw, 44px); font-weight: 700; line-height: 1.18; letter-spacing: -0.5px; margin-bottom: 22px; position: relative; }
+.intro h1 em { font-style: normal; color: var(--orange); }
+.intro p { font-size: 15px; color: rgba(255,255,255,0.6); line-height: 1.85; max-width: 540px; margin-bottom: 18px; position: relative; }
+.intro-meta { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 1px; margin-bottom: 36px; position: relative; }
+
+/* SECTION HEAD */
+.sec-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 4px; color: var(--orange); text-transform: uppercase; margin-bottom: 12px; }
+.sec-head { font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -0.5px; line-height: 1.25; margin-bottom: 8px; }
+.sec-intro { font-size: 14px; color: var(--text); margin-bottom: 36px; max-width: 560px; }
+
+/* QUESTION CARD */
+.q { background: var(--white); border: 1px solid var(--line); border-radius: 4px; padding: 26px 26px; margin-bottom: 18px; }
+.q-num { font-size: 10px; font-weight: 800; letter-spacing: 1px; color: var(--orange); margin-bottom: 8px; }
+.q-label { font-size: 16px; font-weight: 600; line-height: 1.5; margin-bottom: 6px; color: var(--black); }
+.q-hint { font-size: 12.5px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+.q-label + .q-input, .q-label + .q-hint { margin-top: 14px; }
+
+/* INPUTS */
+input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+  width: 100%; font-family: inherit; font-size: 15px; color: var(--black);
+  padding: 12px 14px; border: 1.5px solid #ddd; border-radius: 2px; background: var(--white);
+  transition: border-color 0.2s;
+}
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--orange); }
+textarea { resize: vertical; min-height: 92px; line-height: 1.6; }
+input::placeholder, textarea::placeholder { color: #bbb; }
+
+/* two-column key question */
+.twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.twocol .col-label { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 7px; display: block; }
+.twocol .col-label.want { color: var(--orange); }
+
+/* OPTIONS (radio / checkbox) */
+.opts { display: flex; flex-direction: column; gap: 9px; }
+.opt { display: flex; align-items: center; gap: 11px; padding: 12px 14px; border: 1.5px solid #ddd; border-radius: 2px; cursor: pointer; transition: all 0.15s; font-size: 14.5px; }
+.opt:hover { border-color: var(--orange); background: #fff8f1; }
+.opt input { width: 17px; height: 17px; accent-color: var(--orange); flex-shrink: 0; cursor: pointer; }
+.opt.checked { border-color: var(--orange); background: #fff8f1; }
+.opts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+
+/* SLIDER */
+.slider-row { display: flex; align-items: center; gap: 16px; }
+.slider-row input[type="range"] { flex: 1; accent-color: var(--orange); height: 4px; }
+.slider-val { font-size: 26px; font-weight: 800; color: var(--orange); min-width: 42px; text-align: center; }
+.slider-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+/* NAV BUTTONS */
+.nav-btns { display: flex; justify-content: space-between; gap: 14px; margin-top: 32px; }
+.btn { padding: 14px 34px; font-size: 13px; font-weight: 700; letter-spacing: 1px; border-radius: 2px; cursor: pointer; border: none; font-family: inherit; transition: all 0.2s; }
+.btn-primary { background: var(--orange); color: var(--white); }
+.btn-primary:hover { background: var(--orange-dark); }
+.btn-ghost { background: transparent; color: var(--text); border: 1.5px solid #ccc; }
+.btn-ghost:hover { border-color: var(--black); color: var(--black); }
+.btn-lg { padding: 16px 44px; font-size: 14px; }
+.nav-btns .spacer { flex: 1; }
+
+/* ERROR */
+.err { color: #c0392b; font-size: 13px; margin-top: 14px; display: none; }
+.err.show { display: block; }
+
+/* DONE */
+.done { background: var(--white); border: 1px solid var(--line); border-radius: 4px; padding: 64px 40px; text-align: center; }
+.done-mark { width: 64px; height: 64px; border-radius: 50%; background: #fff3e6; color: var(--orange); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 24px; }
+.done h2 { font-size: 26px; font-weight: 700; margin-bottom: 14px; }
+.done p { font-size: 15px; color: var(--text); max-width: 440px; margin: 0 auto 8px; }
+
+@media (max-width: 600px) {
+  .stage { padding: 140px 16px 100px; }
+  .intro { padding: 40px 26px; }
+  .q { padding: 22px 18px; }
+  .opts-grid, .twocol { grid-template-columns: 1fr; }
+  .btn { padding: 13px 26px; }
+}
+</style>
+</head>
+<body>
+
+<div class="lang-toggle">
+  <button class="on" onclick="setLang('zh')">中文</button>
+  <button onclick="setLang('en')">EN</button>
+</div>
+
+<div class="topbar">
+  <div class="brand"><span class="brand-oa">OA</span><span class="brand-name">OPEN APPLY</span></div>
+</div>
+
+<div class="progress-wrap" id="progressWrap" style="display:none;">
+  <div class="progress-track">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label">
+      <span id="progZh" class="zh"></span><span id="progEn" class="en"></span>
+    </div>
+  </div>
+</div>
+
+<form id="assessForm" class="stage" onsubmit="return false;">
+
+<!-- ===== STEP 0 : INTRO ===== -->
+<div class="step active" data-step="0">
+  <div class="intro">
+    <div class="intro-eyebrow"><span class="intro-line"></span><span class="eyebrow-txt zh">能力与匹配评估</span><span class="eyebrow-txt en">CAPABILITY & FIT ASSESSMENT</span></div>
+    <h1 class="zh">找到<em>真正属于你</em>的那所学校</h1>
+    <h1 class="en">Find the school that is <em>genuinely yours</em></h1>
+    <p class="zh">这不是又一份信息表。我们想先了解你是谁——你的兴趣、你的实力、你真正想要的。然后告诉你:哪些学校稳妥、哪些值得争取,以及如何够到它们。</p>
+    <p class="en">This isn't another data form. We want to understand who you are first — your interests, your strengths, what you genuinely want. Then we'll show you which schools are within reach, which are worth fighting for, and how to get there.</p>
+    <div class="intro-meta zh">约 10–12 分钟 · 全程匿名,提交后才需留下联系方式</div>
+    <div class="intro-meta en">About 10–12 minutes · Anonymous until the final step</div>
+    <button type="button" class="btn btn-primary btn-lg" onclick="go(1)"><span class="zh">开始评估</span><span class="en">Begin assessment</span></button>
+  </div>
+</div>
+
+<!-- ===== STEP 1 : SECTION 0 BASICS ===== -->
+<div class="step" data-step="1">
+  <div class="sec-eyebrow zh">第一部分 · 基本信息</div><div class="sec-eyebrow en">Part 1 · Basics</div>
+  <h2 class="sec-head zh">先简单认识一下</h2><h2 class="sec-head en">Let's start simple</h2>
+  <p class="sec-intro zh">几个基础问题,帮我们为你定制后面的评估。</p>
+  <p class="sec-intro en">A few basics so we can tailor the rest to you.</p>
+
+  <div class="q">
+    <div class="q-label zh">你目前处于哪个申请阶段?</div><div class="q-label en">Which stage are you applying for?</div>
+    <div class="opts" data-single>
+      <label class="opt"><input type="radio" name="stage" value="undergrad" onchange="pickStage()"><span class="zh">本科申请(我是高中生)</span><span class="en">Undergraduate (high school)</span></label>
+      <label class="opt"><input type="radio" name="stage" value="master" onchange="pickStage()"><span class="zh">硕士 / 研究生申请(本科生或已毕业)</span><span class="en">Master's / Graduate (undergrad or graduated)</span></label>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-label zh">你目前所在地 / 国籍?</div><div class="q-label en">Your current location / nationality?</div>
+    <input type="text" name="location" placeholder="">
+  </div>
+
+  <div class="q">
+    <div class="q-label zh">计划入学时间?</div><div class="q-label en">Target intake year?</div>
+    <div class="opts opts-grid" data-single>
+      <label class="opt"><input type="radio" name="intake" value="2026"><span>2026</span></label>
+      <label class="opt"><input type="radio" name="intake" value="2027"><span>2027</span></label>
+      <label class="opt"><input type="radio" name="intake" value="2028"><span>2028</span></label>
+      <label class="opt"><input type="radio" name="intake" value="unsure"><span class="zh">还不确定</span><span class="en">Not sure</span></label>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-label zh">你期望就读的国家 / 地区?(可多选)</div><div class="q-label en">Target countries / regions? (select all)</div>
+    <div class="opts opts-grid">
+      <label class="opt"><input type="checkbox" name="countries" value="UK"><span class="zh">英国</span><span class="en">UK</span></label>
+      <label class="opt"><input type="checkbox" name="countries" value="US"><span class="zh">美国</span><span class="en">US</span></label>
+      <label class="opt"><input type="checkbox" name="countries" value="HK"><span class="zh">中国香港</span><span class="en">Hong Kong</span></label>
+      <label class="opt"><input type="checkbox" name="countries" value="SG"><span class="zh">新加坡</span><span class="en">Singapore</span></label>
+      <label class="opt"><input type="checkbox" name="countries" value="EU"><span class="zh">欧洲(其他)</span><span class="en">Europe (other)</span></label>
+      <label class="opt"><input type="checkbox" name="countries" value="AUCA"><span class="zh">澳洲 / 加拿大</span><span class="en">Australia / Canada</span></label>
+      <label class="opt"><input type="checkbox" name="countries" value="open"><span class="zh">还很开放,想听建议</span><span class="en">Open — advise me</span></label>
+    </div>
+  </div>
+
+  <div class="err" id="err1"><span class="zh">请先选择你的申请阶段。</span><span class="en">Please select your application stage to continue.</span></div>
+  <div class="nav-btns">
+    <button type="button" class="btn btn-ghost" onclick="go(0)"><span class="zh">返回</span><span class="en">Back</span></button>
+    <button type="button" class="btn btn-primary" onclick="next1()"><span class="zh">下一步</span><span class="en">Next</span></button>
+  </div>
+</div>
+
+<!-- ===== STEP 2 : SECTION 1 WHO ARE YOU ===== -->
+<div class="step" data-step="2">
+  <div class="sec-eyebrow zh">第二部分 · 我是谁</div><div class="sec-eyebrow en">Part 2 · Who you are</div>
+  <h2 class="sec-head zh">先听听你自己的声音</h2><h2 class="sec-head en">Let's hear your own voice first</h2>
+  <p class="sec-intro zh">这部分没有标准答案。越坦诚,我们越能帮你找到真正适合的方向——而不是别人替你选的。</p>
+  <p class="sec-intro en">There are no right answers here. The more honest you are, the better we can find a direction that's truly yours — not one chosen for you.</p>
+
+  <div class="q">
+    <div class="q-num">1.1</div>
+    <div class="q-label zh">假设没有人会评价你、不同选择收入都一样——你愿意花一整天投入去做的事是什么?</div>
+    <div class="q-label en">If no one judged you and every path paid the same, what would you happily spend a whole day doing?</div>
+    <textarea name="q_passion"></textarea>
+  </div>
+
+  <div class="q">
+    <div class="q-num">1.2</div>
+    <div class="q-label zh">上一次你主动熬夜、忘记时间去钻研一件事,那是什么?</div>
+    <div class="q-label en">The last time you lost track of time, completely absorbed in something — what was it?</div>
+    <textarea name="q_flow"></textarea>
+  </div>
+
+  <div class="q">
+    <div class="q-num">1.3</div>
+    <div class="q-label zh">关于专业方向,请坦诚地分两栏填:</div>
+    <div class="q-label en">About your field of study — please fill in both, honestly:</div>
+    <div class="q-hint zh">这两者的差距,正是我们想帮你看清的地方。</div>
+    <div class="q-hint en">The gap between these two is exactly what we want to help you see clearly.</div>
+    <div class="twocol">
+      <div>
+        <span class="col-label zh">别人(父母 / 老师)希望我读的</span><span class="col-label en">What others (parents / teachers) want me to study</span>
+        <input type="text" name="q_expected" placeholder="">
+      </div>
+      <div>
+        <span class="col-label want zh">如果可以坦白,我自己更想试的</span><span class="col-label want en">What I'd secretly rather try</span>
+        <input type="text" name="q_desired" placeholder="">
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-num">1.4</div>
+    <div class="q-label zh">比起"专业名称",你更想解决世界上的哪一类问题?(可多选)</div>
+    <div class="q-label en">Rather than a major name — which kinds of problems do you want to work on? (select all)</div>
+    <div class="opts opts-grid">
+      <label class="opt"><input type="checkbox" name="problems" value="health"><span class="zh">让人更健康(医疗 / 生命 / 心理)</span><span class="en">Make people healthier</span></label>
+      <label class="opt"><input type="checkbox" name="problems" value="society"><span class="zh">改善社会(政策 / 教育 / 公平)</span><span class="en">Improve society</span></label>
+      <label class="opt"><input type="checkbox" name="problems" value="create"><span class="zh">创造与表达(艺术 / 设计 / 媒体)</span><span class="en">Create & express</span></label>
+      <label class="opt"><input type="checkbox" name="problems" value="build"><span class="zh">搭建与发明(工程 / 技术 / 产品)</span><span class="en">Build & invent</span></label>
+      <label class="opt"><input type="checkbox" name="problems" value="explore"><span class="zh">探索世界如何运作(科学 / 数学)</span><span class="en">Explore how the world works</span></label>
+      <label class="opt"><input type="checkbox" name="problems" value="business"><span class="zh">让组织与市场更好运转(商业 / 金融)</span><span class="en">Make markets work better</span></label>
+      <label class="opt"><input type="checkbox" name="problems" value="people"><span class="zh">理解人(心理 / 语言 / 文化 / 历史)</span><span class="en">Understand people</span></label>
+      <label class="opt"><input type="checkbox" name="problems" value="planet"><span class="zh">保护地球(环境 / 能源 / 气候)</span><span class="en">Protect the planet</span></label>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-num">1.5</div>
+    <div class="q-label zh">你欣赏一位什么样的人物(真实或虚构)?是什么让你欣赏他 / 她?</div>
+    <div class="q-label en">Name someone you admire (real or fictional). What specifically makes you admire them?</div>
+    <div class="q-hint zh">"原因"比"是谁"更重要。</div>
+    <div class="q-hint en">The "why" matters more than the "who."</div>
+    <textarea name="q_admire"></textarea>
+  </div>
+
+  <div class="q">
+    <div class="q-num">1.6</div>
+    <div class="q-label zh">如果必须二选一,你会选?</div>
+    <div class="q-label en">If you had to pick just one:</div>
+    <div class="opts" data-single>
+      <label class="opt"><input type="radio" name="q_tradeoff" value="rank"><span class="zh">排名更高、但你不太喜欢的专业</span><span class="en">A higher-ranked program you don't love</span></label>
+      <label class="opt"><input type="radio" name="q_tradeoff" value="love"><span class="zh">排名一般、但你真心热爱的专业</span><span class="en">A mid-ranked program you genuinely love</span></label>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-num">1.7</div>
+    <div class="q-label zh">你对自己未来方向的笃定程度?</div>
+    <div class="q-label en">How sure are you about your direction?</div>
+    <div class="slider-row">
+      <input type="range" name="q_certainty" min="1" max="10" value="5" oninput="document.getElementById('certVal').textContent=this.value">
+      <span class="slider-val" id="certVal">5</span>
+    </div>
+    <div class="slider-ends"><span class="zh">完全没想法</span><span class="en">No idea</span><span class="zh">非常清晰</span><span class="en">Crystal clear</span></div>
+  </div>
+
+  <div class="q">
+    <div class="q-num">1.8</div>
+    <div class="q-label zh">到目前为止,对你的专业 / 学校选择影响最大的是谁?</div>
+    <div class="q-label en">Who has influenced your choice the most so far?</div>
+    <div class="opts opts-grid" data-single>
+      <label class="opt"><input type="radio" name="q_influence" value="self"><span class="zh">我自己</span><span class="en">Myself</span></label>
+      <label class="opt"><input type="radio" name="q_influence" value="parents"><span class="zh">父母</span><span class="en">Parents</span></label>
+      <label class="opt"><input type="radio" name="q_influence" value="teacher"><span class="zh">老师 / 顾问</span><span class="en">Teacher / advisor</span></label>
+      <label class="opt"><input type="radio" name="q_influence" value="peers"><span class="zh">同学朋友</span><span class="en">Friends / peers</span></label>
+      <label class="opt"><input type="radio" name="q_influence" value="rankings"><span class="zh">网上的排名和热度</span><span class="en">Online rankings & trends</span></label>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <button type="button" class="btn btn-ghost" onclick="go(1)"><span class="zh">返回</span><span class="en">Back</span></button>
+    <button type="button" class="btn btn-primary" onclick="go(3)"><span class="zh">下一步</span><span class="en">Next</span></button>
+  </div>
+</div>
+
+<!-- ===== STEP 3 : SECTION 2 PROFILE (branches) ===== -->
+<div class="step" data-step="3">
+  <div class="sec-eyebrow zh">第三部分 · 我的实力</div><div class="sec-eyebrow en">Part 3 · Your profile</div>
+  <h2 class="sec-head zh">你的学术与背景</h2><h2 class="sec-head en">Your academics & background</h2>
+  <p class="sec-intro zh">这部分帮我们客观定位你的实力,作为选校的依据。如实填写即可,空着也没关系。</p>
+  <p class="sec-intro en">This helps us position your strengths objectively. Fill in what you can — blanks are fine.</p>
+
+  <!-- BRANCH A: UNDERGRAD -->
+  <div id="branchUndergrad" style="display:none;">
+    <div class="q">
+      <div class="q-label zh">你目前的课程体系?</div><div class="q-label en">Your current curriculum?</div>
+      <div class="opts opts-grid" data-single>
+        <label class="opt"><input type="radio" name="ug_curriculum" value="IB"><span>IB</span></label>
+        <label class="opt"><input type="radio" name="ug_curriculum" value="ALevel"><span>A-Level</span></label>
+        <label class="opt"><input type="radio" name="ug_curriculum" value="AP"><span class="zh">AP / 美高</span><span class="en">AP / US HS</span></label>
+        <label class="opt"><input type="radio" name="ug_curriculum" value="gaokao"><span class="zh">普高 + 高考</span><span class="en">Gaokao</span></label>
+      </div>
+    </div>
+    <div class="q"><div class="q-label zh">你目前的成绩水平?(GPA / 预估分 / 排名)</div><div class="q-label en">Current grades? (GPA / predicted / rank)</div><input type="text" name="ug_grades"></div>
+    <div class="q"><div class="q-label zh">语言考试(雅思 / 托福)?</div><div class="q-label en">Language test (IELTS / TOEFL)?</div><input type="text" name="ug_language" placeholder=""><div class="q-hint zh">还没考的话,直接写"还没考"。</div><div class="q-hint en">Not taken yet? Just write "not yet."</div></div>
+    <div class="q"><div class="q-label zh">标化考试(SAT / ACT,如适用)?</div><div class="q-label en">Standardized test (SAT / ACT, if any)?</div><input type="text" name="ug_standardized"></div>
+    <div class="q"><div class="q-label zh">你最强的 2–3 个学科?</div><div class="q-label en">Your strongest 2–3 subjects?</div><input type="text" name="ug_subjects"></div>
+    <div class="q"><div class="q-label zh">课外活动 / 竞赛 / 项目 / 实习(简述)</div><div class="q-label en">Activities / competitions / projects / internships</div><textarea name="ug_activities"></textarea></div>
+    <div class="q"><div class="q-label zh">有没有特别的经历或特长?(领导 / 公益 / 艺术 / 体育 / 创业 / 研究)</div><div class="q-label en">Any standout experiences or talents?</div><textarea name="ug_special"></textarea></div>
+  </div>
+
+  <!-- BRANCH B: MASTER -->
+  <div id="branchMaster" style="display:none;">
+    <div class="q"><div class="q-label zh">你的本科院校与专业?</div><div class="q-label en">Your undergraduate university & major?</div><input type="text" name="ms_school"></div>
+    <div class="q"><div class="q-label zh">你的 GPA / 均分 / 专业排名?</div><div class="q-label en">Your GPA / average / class rank?</div><input type="text" name="ms_gpa"></div>
+    <div class="q"><div class="q-label zh">语言考试(雅思 / 托福)?</div><div class="q-label en">Language test (IELTS / TOEFL)?</div><input type="text" name="ms_language"></div>
+    <div class="q"><div class="q-label zh">GRE / GMAT(如适用)?</div><div class="q-label en">GRE / GMAT (if applicable)?</div><input type="text" name="ms_gre"></div>
+    <div class="q"><div class="q-label zh">研究 / 实习 / 工作经历(简述)</div><div class="q-label en">Research / internship / work experience</div><textarea name="ms_experience"></textarea></div>
+    <div class="q"><div class="q-label zh">论文 / 发表 / 项目成果(如有)</div><div class="q-label en">Papers / publications / project outcomes (if any)</div><textarea name="ms_publications"></textarea></div>
+    <div class="q">
+      <div class="q-label zh">你希望硕士阶段主要是为了:</div><div class="q-label en">Your main goal for the master's:</div>
+      <div class="opts" data-single>
+        <label class="opt"><input type="radio" name="ms_purpose" value="research"><span class="zh">深入学术,走研究 / 读博</span><span class="en">Academic depth / PhD track</span></label>
+        <label class="opt"><input type="radio" name="ms_purpose" value="career"><span class="zh">转换或提升职业方向</span><span class="en">Pivot or level up my career</span></label>
+        <label class="opt"><input type="radio" name="ms_purpose" value="industry"><span class="zh">进入特定行业 / 地区</span><span class="en">Enter a specific industry / region</span></label>
+        <label class="opt"><input type="radio" name="ms_purpose" value="explore"><span class="zh">还在探索</span><span class="en">Still exploring</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <button type="button" class="btn btn-ghost" onclick="go(2)"><span class="zh">返回</span><span class="en">Back</span></button>
+    <button type="button" class="btn btn-primary" onclick="go(4)"><span class="zh">下一步</span><span class="en">Next</span></button>
+  </div>
+</div>
+
+<!-- ===== STEP 4 : SECTION 3 GOALS + CONTACT ===== -->
+<div class="step" data-step="4">
+  <div class="sec-eyebrow zh">第四部分 · 目标与约束</div><div class="sec-eyebrow en">Part 4 · Goals & constraints</div>
+  <h2 class="sec-head zh">最后,聊聊现实</h2><h2 class="sec-head en">Finally, the practical side</h2>
+  <p class="sec-intro zh">这些会成为我们为你框定选校范围的边界。</p>
+  <p class="sec-intro en">These set the boundaries for the school list we'll build for you.</p>
+
+  <div class="q"><div class="q-label zh">你心里有没有"梦校"或目标学校?(有就写,没有也没关系)</div><div class="q-label en">Any dream or target schools in mind? (optional)</div><input type="text" name="g_dream"></div>
+
+  <div class="q">
+    <div class="q-label zh">预算区间(学费 + 生活,每年)?</div><div class="q-label en">Annual budget (tuition + living)?</div>
+    <div class="opts opts-grid" data-single>
+      <label class="opt"><input type="radio" name="g_budget" value="lt20"><span class="zh">20 万 RMB 以下</span><span class="en">Under ¥200k</span></label>
+      <label class="opt"><input type="radio" name="g_budget" value="20-40"><span>¥20–40万</span></label>
+      <label class="opt"><input type="radio" name="g_budget" value="40-60"><span>¥40–60万</span></label>
+      <label class="opt"><input type="radio" name="g_budget" value="60+"><span class="zh">60 万以上</span><span class="en">¥600k+</span></label>
+      <label class="opt"><input type="radio" name="g_budget" value="na"><span class="zh">不是主要顾虑</span><span class="en">Not a main concern</span></label>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-label zh">毕业后大致想去哪里发展?</div><div class="q-label en">Where do you see yourself after graduating?</div>
+    <div class="opts opts-grid" data-single>
+      <label class="opt"><input type="radio" name="g_future" value="home"><span class="zh">回国</span><span class="en">Return home</span></label>
+      <label class="opt"><input type="radio" name="g_future" value="stay"><span class="zh">留在留学国</span><span class="en">Stay abroad</span></label>
+      <label class="opt"><input type="radio" name="g_future" value="open"><span class="zh">看机会,都可以</span><span class="en">Open to either</span></label>
+      <label class="opt"><input type="radio" name="g_future" value="unsure"><span class="zh">还没想</span><span class="en">Haven't thought yet</span></label>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-label zh">选校时,你更倾向?</div><div class="q-label en">When choosing schools, you lean toward:</div>
+    <div class="opts" data-single>
+      <label class="opt"><input type="radio" name="g_risk" value="safe"><span class="zh">稳妥为主,确保有好结果</span><span class="en">Play it safe — secure a good outcome</span></label>
+      <label class="opt"><input type="radio" name="g_risk" value="reach"><span class="zh">愿意冲刺,够一够更好的学校</span><span class="en">Reach — aim higher</span></label>
+      <label class="opt"><input type="radio" name="g_risk" value="balanced"><span class="zh">平衡,两者都要</span><span class="en">Balanced — a mix</span></label>
+    </div>
+  </div>
+
+  <div class="q"><div class="q-label zh">关于这次申请,你最大的担心或困惑是什么?</div><div class="q-label en">What's your biggest worry or question about applying?</div><textarea name="g_concern"></textarea></div>
+
+  <!-- CONTACT -->
+  <div class="sec-eyebrow zh" style="margin-top:44px;">把报告发给你</div><div class="sec-eyebrow en" style="margin-top:44px;">Where to send your report</div>
+  <h2 class="sec-head zh">你的评估报告,发到哪里?</h2><h2 class="sec-head en">Where should we send your report?</h2>
+  <p class="sec-intro zh">完成后,我们会把你的能力图谱与分层选校建议发给你。</p>
+  <p class="sec-intro en">We'll send your capability profile and tiered school list here.</p>
+
+  <div class="q"><div class="q-label zh">姓名</div><div class="q-label en">Name</div><input type="text" name="c_name"></div>
+  <div class="q"><div class="q-label zh">邮箱</div><div class="q-label en">Email</div><input type="email" name="c_email" placeholder="your@email.com"></div>
+  <div class="q"><div class="q-label zh">电话 / 微信</div><div class="q-label en">Phone / WeChat</div><input type="tel" name="c_phone"></div>
+
+  <div class="err" id="err4"><span class="zh">请填写姓名和有效邮箱,我们才能把报告发给你。</span><span class="en">Please add your name and a valid email so we can send your report.</span></div>
+  <div class="nav-btns">
+    <button type="button" class="btn btn-ghost" onclick="go(3)"><span class="zh">返回</span><span class="en">Back</span></button>
+    <button type="button" class="btn btn-primary btn-lg" id="submitBtn" onclick="submitForm()"><span class="zh">提交评估</span><span class="en">Submit assessment</span></button>
+  </div>
+</div>
+
+<!-- ===== STEP 5 : DONE ===== -->
+<div class="step" data-step="5">
+  <div class="done">
+    <div class="done-mark">✓</div>
+    <h2 class="zh">收到了,谢谢你的坦诚 👏</h2><h2 class="en">Got it — thank you for being honest 👏</h2>
+    <p class="zh">我们正在分析你的回答,生成属于你的能力图谱与分层选校建议。报告会尽快发送到你留下的邮箱。</p>
+    <p class="en">We're analyzing your answers to build your capability profile and tiered school list. Your report will arrive at the email you provided.</p>
+    <p class="zh" style="margin-top:18px; color:var(--muted); font-size:13px;">OpenApply · Merit + Fit · London · Hangzhou</p>
+    <p class="en" style="margin-top:18px; color:var(--muted); font-size:13px;">OpenApply · Merit + Fit · London · Hangzhou</p>
+  </div>
+</div>
+
+</form>
+
+<script>
+// ---- config: paste your form endpoint here to capture data (see notes) ----
+const FORM_ENDPOINT = "https://formspree.io/f/mojzbknp";
+
+let current = 0;
+const totalSteps = 4; // steps 1..4 count toward progress
+
+const labels = {
+  zh: ["", "第一部分 / 4 · 基本信息", "第二部分 / 4 · 我是谁", "第三部分 / 4 · 我的实力", "第四部分 / 4 · 目标与联系方式"],
+  en: ["", "Part 1 / 4 · Basics", "Part 2 / 4 · Who you are", "Part 3 / 4 · Your profile", "Part 4 / 4 · Goals & contact"]
+};
+
+function setLang(l) {
+  document.documentElement.lang = l;
+  document.querySelectorAll('.lang-toggle button').forEach((b,i) => {
+    b.classList.toggle('on', (l==='zh'&&i===0)||(l==='en'&&i===1));
+  });
+  updateProgress();
+}
+
+function go(step) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const el = document.querySelector('.step[data-step="'+step+'"]');
+  el.classList.add('active');
+  current = step;
+  document.getElementById('progressWrap').style.display = (step>=1 && step<=4) ? 'block' : 'none';
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function updateProgress() {
+  if (current>=1 && current<=4) {
+    document.getElementById('progressFill').style.width = (current/totalSteps*100)+'%';
+    document.getElementById('progZh').textContent = labels.zh[current];
+    document.getElementById('progEn').textContent = labels.en[current];
+  }
+}
+
+function pickStage() {
+  const v = document.querySelector('input[name="stage"]:checked');
+  if (!v) return;
+  document.getElementById('branchUndergrad').style.display = v.value==='undergrad' ? 'block' : 'none';
+  document.getElementById('branchMaster').style.display = v.value==='master' ? 'block' : 'none';
+}
+
+function next1() {
+  const v = document.querySelector('input[name="stage"]:checked');
+  if (!v) { document.getElementById('err1').classList.add('show'); return; }
+  document.getElementById('err1').classList.remove('show');
+  pickStage();
+  go(2);
+}
+
+// visual checked state for option cards
+document.addEventListener('change', e => {
+  if (e.target.matches('.opt input')) {
+    const opt = e.target.closest('.opt');
+    if (e.target.type === 'radio') {
+      document.querySelectorAll('input[name="'+e.target.name+'"]').forEach(r => r.closest('.opt').classList.remove('checked'));
+    }
+    if (e.target.checked) opt.classList.add('checked'); else opt.classList.remove('checked');
+  }
+});
+
+function collect() {
+  const data = {};
+  const form = document.getElementById('assessForm');
+  new FormData(form).forEach((val, key) => {
+    if (data[key]) { data[key] = [].concat(data[key], val); } else { data[key] = val; }
+  });
+  return data;
+}
+
+function submitForm() {
+  const name = document.querySelector('input[name="c_name"]').value.trim();
+  const email = document.querySelector('input[name="c_email"]').value.trim();
+  if (!name || !email.includes('@')) { document.getElementById('err4').classList.add('show'); return; }
+  document.getElementById('err4').classList.remove('show');
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.style.opacity = '0.6';
+
+  const data = collect();
+
+  if (FORM_ENDPOINT) {
+    fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(() => go(5)).catch(() => go(5));
+  } else {
+    // no endpoint configured yet — still complete the flow for demo
+    console.log('Assessment data (no endpoint set):', data);
+    go(5);
+  }
+}
+</script>
+</body>
+</html>
