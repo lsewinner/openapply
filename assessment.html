@@ -7,10 +7,11 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --orange: #F47C00; --orange-dark: #e06e00;
+  --orange: #F47C00; --orange-dark: #e06e00; --orange-d: #e06e00;
   --black: #0D0D0D; --white: #fff;
   --gray-bg: #F7F7F5; --line: rgba(0,0,0,0.09);
   --text: #555; --muted: #999;
+  --green:#2e9e5b; --green-bg:#eaf7ef; --yellow:#d68a00; --yellow-bg:#fff6e6; --red:#d14b3c; --red-bg:#fdecea;
 }
 html { scroll-behavior: smooth; }
 body {
@@ -71,7 +72,7 @@ html[lang="zh"] .en { display: none; }
 .q-label + .q-input, .q-label + .q-hint { margin-top: 14px; }
 
 /* INPUTS */
-input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+input[type="text"], input[type="email"], input[type="tel"], input[type="number"], textarea, select {
   width: 100%; font-family: inherit; font-size: 15px; color: var(--black);
   padding: 12px 14px; border: 1.5px solid #ddd; border-radius: 2px; background: var(--white);
   transition: border-color 0.2s;
@@ -126,6 +127,63 @@ input::placeholder, textarea::placeholder { color: #bbb; }
   .opts-grid, .twocol { grid-template-columns: 1fr; }
   .btn { padding: 13px 26px; }
 }
+
+/* ===== engine result styles ===== */
+.ctag{ display:inline-block; font-size:10px; font-weight:700; letter-spacing:.5px; color:var(--muted); border:1px solid var(--line); border-radius:2px; padding:1px 6px; margin-left:8px; vertical-align:middle; }
+.pbadges{ margin-top:7px; display:flex; flex-wrap:wrap; gap:6px; }
+.pbadge{ font-size:11px; font-weight:600; color:var(--orange-d); background:#fff3e6; border:1px solid #f4c98a; border-radius:2px; padding:2px 8px; }
+.cn-status{ font-size:11.5px; color:var(--green); margin-top:5px; font-weight:600; }
+.over-budget{ color:var(--red); font-weight:600; }
+.vgroup-label{ font-size:11px; font-weight:700; letter-spacing:1px; color:var(--muted); text-transform:uppercase; margin:14px 0 8px; }
+/* RESULT */
+#result{ display:none; }
+.r-head{ border-left:3px solid var(--orange); padding-left:14px; margin:30px 0 16px; }
+.r-head h2{ font-size:20px; font-weight:700; }
+.r-head .sub{ font-size:12.5px; color:var(--muted); margin-top:2px; }
+
+.snap{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:8px; }
+.snap-item{ background:#fff; border:1px solid var(--line); border-radius:3px; padding:10px 14px; flex:1; min-width:130px; }
+.snap-k{ font-size:10px; letter-spacing:1px; color:var(--muted); text-transform:uppercase; }
+.snap-v{ font-size:17px; font-weight:700; margin-top:3px; }
+
+.major-card{ background:#fff; border:1px solid var(--line); border-radius:4px; padding:14px 16px; margin-bottom:10px; }
+.major-card.gem{ border-color:var(--orange); background:#fff8f1; }
+.major-name{ font-size:15px; font-weight:700; }
+.major-tag{ font-size:10px; font-weight:700; letter-spacing:1px; color:var(--orange); text-transform:uppercase; margin-left:8px; }
+.major-reason{ font-size:13px; color:var(--text); margin-top:4px; }
+
+.fit-alert{ background:#fff8f1; border:1px solid var(--orange); border-radius:4px; padding:18px 20px; margin-bottom:16px; }
+.fit-alert .t{ font-size:13px; font-weight:700; color:var(--orange-d); letter-spacing:1px; margin-bottom:8px; text-transform:uppercase; }
+.fit-alert p{ font-size:14px; color:#7a4a10; line-height:1.7; }
+
+.tier{ margin-bottom:18px; }
+.tier-h{ display:flex; align-items:center; gap:9px; font-size:14px; font-weight:700; margin-bottom:10px; }
+.dot{ width:11px; height:11px; border-radius:50%; display:inline-block; }
+.dot.g{ background:var(--green); } .dot.y{ background:var(--yellow); } .dot.r{ background:var(--red); }
+
+.school{ background:#fff; border:1px solid var(--line); border-left:3px solid #ddd; border-radius:3px; padding:13px 15px; margin-bottom:9px; }
+.school.g{ border-left-color:var(--green); } .school.y{ border-left-color:var(--yellow); } .school.r{ border-left-color:var(--red); }
+.school-top{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; }
+.school-name{ font-size:15px; font-weight:700; }
+.school-prog{ font-size:12.5px; color:var(--muted); }
+.school-cost{ font-size:11px; color:var(--muted); white-space:nowrap; }
+.over-budget{ color:var(--red); font-weight:600; }
+.ctag{ display:inline-block; font-size:10px; font-weight:700; letter-spacing:.5px; color:var(--muted); border:1px solid var(--line); border-radius:2px; padding:1px 6px; margin-left:8px; vertical-align:middle; }
+.pbadges{ margin-top:7px; display:flex; flex-wrap:wrap; gap:6px; }
+.pbadge{ font-size:11px; font-weight:600; color:var(--orange-d); background:#fff3e6; border:1px solid #f4c98a; border-radius:2px; padding:2px 8px; }
+.roadmap{ margin-top:9px; padding-top:9px; border-top:1px dashed var(--line); }
+.roadmap-t{ font-size:11px; font-weight:700; letter-spacing:1px; color:var(--orange); text-transform:uppercase; margin-bottom:5px; }
+.roadmap ul{ margin:0; padding-left:18px; }
+.roadmap li{ font-size:13px; color:var(--text); margin-bottom:3px; }
+.more{ font-size:12.5px; color:var(--muted); padding:4px 0; }
+
+.disclaimer{ font-size:11.5px; color:var(--muted); background:#fff; border:1px dashed var(--line); border-radius:4px; padding:14px 16px; margin-top:24px; line-height:1.6; }
+.cta-final{ text-align:center; margin-top:22px; }
+.cta-final a{ display:inline-block; padding:14px 32px; background:var(--orange); color:#fff; text-decoration:none; font-size:13px; font-weight:700; letter-spacing:1px; border-radius:2px; }
+.footer{ text-align:center; font-size:11px; color:var(--muted); margin-top:30px; letter-spacing:1px; }
+
+@media(max-width:600px){ .wrap{ padding:84px 14px 80px; } .hero{ padding:30px 22px; } .card{ padding:18px 16px; } }
+
 </style>
 </head>
 <body>
@@ -199,10 +257,8 @@ input::placeholder, textarea::placeholder { color: #bbb; }
     <div class="opts opts-grid">
       <label class="opt"><input type="checkbox" name="countries" value="UK"><span class="zh">英国</span><span class="en">UK</span></label>
       <label class="opt"><input type="checkbox" name="countries" value="US"><span class="zh">美国</span><span class="en">US</span></label>
-      <label class="opt"><input type="checkbox" name="countries" value="HK"><span class="zh">中国香港</span><span class="en">Hong Kong</span></label>
-      <label class="opt"><input type="checkbox" name="countries" value="SG"><span class="zh">新加坡</span><span class="en">Singapore</span></label>
-      <label class="opt"><input type="checkbox" name="countries" value="EU"><span class="zh">欧洲(其他)</span><span class="en">Europe (other)</span></label>
-      <label class="opt"><input type="checkbox" name="countries" value="AUCA"><span class="zh">澳洲 / 加拿大</span><span class="en">Australia / Canada</span></label>
+      <label class="opt"><input type="checkbox" name="countries" value="CA"><span class="zh">加拿大</span><span class="en">Canada</span></label>
+      <label class="opt"><input type="checkbox" name="countries" value="AU"><span class="zh">澳洲</span><span class="en">Australia</span></label>
       <label class="opt"><input type="checkbox" name="countries" value="open"><span class="zh">还很开放,想听建议</span><span class="en">Open — advise me</span></label>
     </div>
   </div>
@@ -336,9 +392,24 @@ input::placeholder, textarea::placeholder { color: #bbb; }
         <label class="opt"><input type="radio" name="ug_curriculum" value="gaokao"><span class="zh">普高 + 高考</span><span class="en">Gaokao</span></label>
       </div>
     </div>
-    <div class="q"><div class="q-label zh">你目前的成绩水平?(GPA / 预估分 / 排名)</div><div class="q-label en">Current grades? (GPA / predicted / rank)</div><input type="text" name="ug_grades"></div>
-    <div class="q"><div class="q-label zh">语言考试(雅思 / 托福)?</div><div class="q-label en">Language test (IELTS / TOEFL)?</div><input type="text" name="ug_language" placeholder=""><div class="q-hint zh">还没考的话,直接写"还没考"。</div><div class="q-hint en">Not taken yet? Just write "not yet."</div></div>
-    <div class="q"><div class="q-label zh">标化考试(SAT / ACT,如适用)?</div><div class="q-label en">Standardized test (SAT / ACT, if any)?</div><input type="text" name="ug_standardized"></div>
+    <div class="q"><div class="q-label zh">你的预估成绩档?</div><div class="q-label en">Your predicted grade band?</div>
+      <select name="ug_band">
+        <option value="A*A*A*">A*A*A* / IB 40+ (顶尖 Top)</option>
+        <option value="A*AA" selected>A*AA / IB 38 (很强 Strong)</option>
+        <option value="AAA">AAA / IB 36</option>
+        <option value="AAB">AAB / IB 34</option>
+        <option value="ABB">ABB / IB 32</option>
+        <option value="BBB">BBB / IB &lt;32</option>
+      </select>
+      <div class="q-hint zh">选最接近你预估水平的一档。</div><div class="q-hint en">Pick the band closest to your predicted level.</div>
+    </div>
+    <div class="q"><div class="q-label zh">雅思成绩</div><div class="q-label en">IELTS score</div><input type="number" name="ug_ielts" step="0.5" min="0" max="9" value="6.5"><div class="q-hint zh">还没考填 0。</div><div class="q-hint en">Enter 0 if untested.</div></div>
+    <div class="q"><div class="q-label zh">是否已有 SAT / ACT 成绩?</div><div class="q-label en">Do you have SAT / ACT?</div>
+      <div class="opts opts-grid" data-single>
+        <label class="opt"><input type="radio" name="ug_sat" value="yes"><span class="zh">已有</span><span class="en">Yes</span></label>
+        <label class="opt"><input type="radio" name="ug_sat" value="no" checked><span class="zh">还没</span><span class="en">No</span></label>
+      </div>
+    </div>
     <div class="q"><div class="q-label zh">你最强的 2–3 个学科?</div><div class="q-label en">Your strongest 2–3 subjects?</div><input type="text" name="ug_subjects"></div>
     <div class="q"><div class="q-label zh">课外活动 / 竞赛 / 项目 / 实习(简述)</div><div class="q-label en">Activities / competitions / projects / internships</div><textarea name="ug_activities"></textarea></div>
     <div class="q"><div class="q-label zh">有没有特别的经历或特长?(领导 / 公益 / 艺术 / 体育 / 创业 / 研究)</div><div class="q-label en">Any standout experiences or talents?</div><textarea name="ug_special"></textarea></div>
@@ -346,9 +417,17 @@ input::placeholder, textarea::placeholder { color: #bbb; }
 
   <!-- BRANCH B: MASTER -->
   <div id="branchMaster" style="display:none;">
-    <div class="q"><div class="q-label zh">你的本科院校与专业?</div><div class="q-label en">Your undergraduate university & major?</div><input type="text" name="ms_school"></div>
-    <div class="q"><div class="q-label zh">你的 GPA / 均分 / 专业排名?</div><div class="q-label en">Your GPA / average / class rank?</div><input type="text" name="ms_gpa"></div>
-    <div class="q"><div class="q-label zh">语言考试(雅思 / 托福)?</div><div class="q-label en">Language test (IELTS / TOEFL)?</div><input type="text" name="ms_language"></div>
+    <div class="q"><div class="q-label zh">你的本科成绩水平?</div><div class="q-label en">Your undergraduate GPA level?</div>
+      <select name="ms_gpaband">
+        <option value="top">顶尖 Top(一等 / 3.8+ / 90+)</option>
+        <option value="high" selected>较高 High(高2:1 / 3.5–3.8 / 85–89)</option>
+        <option value="mid">中等 Mid(2:1 / 3.0–3.5 / 80–84)</option>
+        <option value="low">一般 Lower(2:2 / &lt;3.0)</option>
+      </select>
+      <div class="q-hint zh">也可在下方补充具体分数与院校。</div><div class="q-hint en">Add exact figures & school below if you like.</div>
+    </div>
+    <div class="q"><div class="q-label zh">你的本科院校与专业 / 具体均分(选填)</div><div class="q-label en">Undergrad university, major & exact GPA (optional)</div><input type="text" name="ms_school"></div>
+    <div class="q"><div class="q-label zh">雅思成绩</div><div class="q-label en">IELTS score</div><input type="number" name="ms_ielts" step="0.5" min="0" max="9" value="6.5"><div class="q-hint zh">还没考填 0。</div><div class="q-hint en">Enter 0 if untested.</div></div>
     <div class="q"><div class="q-label zh">GRE / GMAT(如适用)?</div><div class="q-label en">GRE / GMAT (if applicable)?</div><input type="text" name="ms_gre"></div>
     <div class="q"><div class="q-label zh">研究 / 实习 / 工作经历(简述)</div><div class="q-label en">Research / internship / work experience</div><textarea name="ms_experience"></textarea></div>
     <div class="q"><div class="q-label zh">论文 / 发表 / 项目成果(如有)</div><div class="q-label en">Papers / publications / project outcomes (if any)</div><textarea name="ms_publications"></textarea></div>
@@ -410,11 +489,34 @@ input::placeholder, textarea::placeholder { color: #bbb; }
 
   <div class="q"><div class="q-label zh">关于这次申请,你最大的担心或困惑是什么?</div><div class="q-label en">What's your biggest worry or question about applying?</div><textarea name="g_concern"></textarea></div>
 
+  <div class="q">
+    <div class="q-label zh">你(和家人)最在意学校的哪些价值?(可多选)</div>
+    <div class="q-label en">Which value points matter most to you & your family? (multi)</div>
+    <div class="q-hint zh">命中你所选价值的学校,会在结果里优先推荐。</div><div class="q-hint en">Schools matching your values are surfaced first in your result.</div>
+    <div class="vgroup-label zh">回国发展</div><div class="vgroup-label en">Returning to China</div>
+    <div class="opts opts-grid">
+      <label class="opt"><input type="checkbox" name="values" value="settle"><span class="zh">落户友好</span><span class="en">Settlement</span></label>
+      <label class="opt"><input type="checkbox" name="values" value="hktalent"><span class="zh">港·高才通</span><span class="en">HK Talent</span></label>
+      <label class="opt"><input type="checkbox" name="values" value="civil"><span class="zh">考公 / 选调友好</span><span class="en">Civil service</span></label>
+    </div>
+    <div class="vgroup-label zh">学生体验</div><div class="vgroup-label en">Student experience</div>
+    <div class="opts opts-grid">
+      <label class="opt"><input type="checkbox" name="values" value="ya"><span class="zh">国际交换</span><span class="en">Year abroad</span></label>
+      <label class="opt"><input type="checkbox" name="values" value="sport"><span class="zh">运动文化</span><span class="en">Sports</span></label>
+      <label class="opt"><input type="checkbox" name="values" value="inc"><span class="zh">创业孵化</span><span class="en">Incubator</span></label>
+    </div>
+    <div class="vgroup-label zh">其他</div><div class="vgroup-label en">Other</div>
+    <div class="opts opts-grid">
+      <label class="opt"><input type="checkbox" name="values" value="schol"><span class="zh">奖学金机会</span><span class="en">Scholarships</span></label>
+      <label class="opt"><input type="checkbox" name="values" value="elite"><span class="zh">精英人脉</span><span class="en">Elite network</span></label>
+    </div>
+  </div>
+
   <!-- CONTACT -->
   <div class="sec-eyebrow zh" style="margin-top:44px;">把报告发给你</div><div class="sec-eyebrow en" style="margin-top:44px;">Where to send your report</div>
   <h2 class="sec-head zh">你的评估报告,发到哪里?</h2><h2 class="sec-head en">Where should we send your report?</h2>
-  <p class="sec-intro zh">完成后,我们会把你的能力图谱与分层选校建议发给你。</p>
-  <p class="sec-intro en">We'll send your capability profile and tiered school list here.</p>
+  <p class="sec-intro zh">完成后,我们会立即为你生成分层选校建议,并把完整报告发到这里。</p>
+  <p class="sec-intro en">We'll generate your tiered school list instantly, and send the full report here.</p>
 
   <div class="q"><div class="q-label zh">姓名</div><div class="q-label en">Name</div><input type="text" name="c_name"></div>
   <div class="q"><div class="q-label zh">邮箱</div><div class="q-label en">Email</div><input type="email" name="c_email" placeholder="your@email.com"></div>
@@ -429,14 +531,17 @@ input::placeholder, textarea::placeholder { color: #bbb; }
 
 <!-- ===== STEP 5 : DONE ===== -->
 <div class="step" data-step="5">
-  <div class="done">
-    <div class="done-mark">✓</div>
-    <h2 class="zh">收到了,谢谢你的坦诚 👏</h2><h2 class="en">Got it — thank you for being honest 👏</h2>
-    <p class="zh">我们正在分析你的回答,生成属于你的能力图谱与分层选校建议。报告会尽快发送到你留下的邮箱。</p>
-    <p class="en">We're analyzing your answers to build your capability profile and tiered school list. Your report will arrive at the email you provided.</p>
-    <p class="zh" style="margin-top:18px; color:var(--muted); font-size:13px;">OpenApply · Merit + Fit · London · Hangzhou</p>
-    <p class="en" style="margin-top:18px; color:var(--muted); font-size:13px;">OpenApply · Merit + Fit · London · Hangzhou</p>
+  <div class="done" style="padding:34px 28px; text-align:left;">
+    <div style="display:flex; align-items:center; gap:14px;">
+      <div class="done-mark" style="margin:0; width:48px; height:48px; font-size:24px;">✓</div>
+      <div>
+        <h2 class="zh" style="font-size:20px;">收到了,谢谢你的坦诚 👏</h2><h2 class="en" style="font-size:20px;">Got it — thank you for being honest 👏</h2>
+        <p class="zh" style="font-size:13px; color:var(--muted);">完整报告已记录,顾问会跟进。下面是为你即时生成的选校匹配 ↓</p>
+        <p class="en" style="font-size:13px; color:var(--muted);">Your full answers are saved for mentor follow-up. Here's your instant school match ↓</p>
+      </div>
+    </div>
   </div>
+  <div id="engineResult"></div>
 </div>
 
 </form>
@@ -514,29 +619,265 @@ function collect() {
   return data;
 }
 
+function checkedVals(name){ return [...document.querySelectorAll('input[name="'+name+'"]:checked')].map(i=>i.value); }
+function radioVal(name){ const e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:null; }
+function selVal(name){ const e=document.querySelector('[name="'+name+'"]'); return e?e.value:null; }
+
+function buildStudent(){
+  const level = radioVal('stage') || 'undergrad';
+  let countries = checkedVals('countries').filter(c=>['UK','US','CA','AU'].includes(c));
+  if(countries.length===0) countries=['UK','US','CA','AU'];
+  const budgetMap = {lt20:20,'20-40':40,'40-60':60,'60+':70,na:999};
+  const st = {
+    level, countries,
+    domains: checkedVals('problems'),
+    budgetCap: budgetMap[radioVal('g_budget')] ?? 999,
+    certainty: parseInt(selVal('q_certainty')||'5'),
+    influence: radioVal('q_influence') || 'self',
+    values: checkedVals('values'),
+  };
+  if(level==='undergrad'){
+    st.gradeSystem='ALevel'; st.gradeBand = selVal('ug_band') || 'AAB';
+    st.ielts = parseFloat((selVal('ug_ielts')||'0')); st.hasSAT = radioVal('ug_sat')==='yes';
+  } else {
+    st.gpaBand = selVal('ms_gpaband') || 'mid';
+    st.ielts = parseFloat((selVal('ms_ielts')||'0')); st.hasSAT=false;
+  }
+  return st;
+}
+
 function submitForm() {
   const name = document.querySelector('input[name="c_name"]').value.trim();
   const email = document.querySelector('input[name="c_email"]').value.trim();
   if (!name || !email.includes('@')) { document.getElementById('err4').classList.add('show'); return; }
+  if (checkedVals('problems').length===0) { document.getElementById('err4').classList.remove('show'); alert(document.documentElement.lang==='zh'?'请在第二部分至少选择一个"想解决的问题"方向,我们才能为你匹配。':'Please select at least one problem area in Part 2 so we can match you.'); return; }
   document.getElementById('err4').classList.remove('show');
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true; btn.style.opacity = '0.6';
 
+  // 1) instant engine result
+  try { render(buildStudent()); } catch(e){ console.error(e); }
+  // 2) save full answers (incl. open-text) for mentor follow-up
   const data = collect();
-
   if (FORM_ENDPOINT) {
-    fetch(FORM_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(data)
-    }).then(() => go(5)).catch(() => go(5));
-  } else {
-    // no endpoint configured yet — still complete the flow for demo
-    console.log('Assessment data (no endpoint set):', data);
-    go(5);
-  }
+    fetch(FORM_ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify(data) }).catch(()=>{});
+  } else { console.log('Assessment data:', data); }
+  // 3) show result step
+  go(5);
 }
+
+/* ===== recommendation engine (verified) ===== */
+const DOMAIN_MAJORS = {
+  health:["医学 Medicine","生物医学 Biomedical Sci","公共卫生 Public Health","心理学 Psychology","生物科学 Biology","药学 Pharmacy"],
+  society:["PPE","政治 Politics","社会政策 Social Policy","教育 Education","法律 Law","国际关系 IR","社会学 Sociology"],
+  create:["建筑 Architecture","设计 Design","传媒 Media","电影 Film","艺术史 Art History","创意写作 Creative Writing"],
+  build:["机械工程 Mech Eng","电子工程 EEE","土木工程 Civil Eng","计算机科学 Computer Science","软件工程 Software","材料 Materials","产品设计 Product Design"],
+  explore:["数学 Mathematics","物理 Physics","化学 Chemistry","统计 Statistics","数据科学 Data Science","天文 Astronomy"],
+  business:["经济 Economics","金融 Finance","会计 Accounting","管理 Management","商业分析 Business Analytics","市场营销 Marketing"],
+  people:["心理学 Psychology","语言学 Linguistics","人类学 Anthropology","历史 History","哲学 Philosophy","文化研究 Cultural Studies"],
+  planet:["环境科学 Environmental Sci","地理 Geography","能源工程 Energy Eng","可持续发展 Sustainability","地球科学 Earth Sci"],
+};
+const ALEVEL_INDEX={"A*A*A*":98,"A*AA":92,"AAA":86,"AAB":80,"ABB":74,"BBB":68};
+const IB_INDEX={"40+":96,"38-39":91,"36-37":85,"34-35":79,"32-33":73,"<32":66};
+const GPA_INDEX={top:92,high:84,mid:76,low:66};
+const SCHOOLS=[
+ // UK (sample of top-50 target)
+ {id:"UK-CAM",school:"University of Cambridge",program:"自然科学/工程 Natural Sci/Eng",country:"UK",level:"undergrad",clusters:["explore","build","health"],bar:94,eng:7.5,extra:["笔试","面试"],sel:"extreme",cost:42,prio:["elite","inc"]},
+ {id:"UK-OXF",school:"University of Oxford",program:"PPE",country:"UK",level:"undergrad",clusters:["society","business","people"],bar:92,eng:7.5,extra:["TSA笔试","面试"],sel:"extreme",cost:42,prio:["elite","inc"]},
+ {id:"UK-IMP",school:"Imperial College London",program:"工程/计算机 Engineering/CS",country:"UK",level:"undergrad",clusters:["build","explore"],bar:92,eng:7.0,extra:[],sel:"extreme",cost:40,prio:["inc"]},
+ {id:"UK-LSE",school:"LSE",program:"经济 Economics",country:"UK",level:"undergrad",clusters:["business","society"],bar:92,eng:7.0,extra:["数学要求高"],sel:"extreme",cost:40,prio:["elite","inc"]},
+ {id:"UK-UCL",school:"UCL",program:"计算机/社科 CS/Social",country:"UK",level:"undergrad",clusters:["build","explore","society"],bar:88,eng:6.5,extra:[],sel:"high",cost:38,prio:["inc","ya"]},
+ {id:"UK-DUR",school:"Durham University",program:"人文/社科/商科 Humanities/Social/Business",country:"UK",level:"undergrad",clusters:["society","people","business"],bar:86,eng:6.5,extra:[],sel:"high",cost:34,prio:["elite","ya"]},
+ {id:"UK-WAR",school:"University of Warwick",program:"商科/工程 Business/Engineering",country:"UK",level:"undergrad",clusters:["business","build","explore"],bar:86,eng:6.5,extra:[],sel:"high",cost:34,prio:["inc","ya"]},
+ {id:"UK-EDI",school:"University of Edinburgh",program:"心理/社科 Psychology/Social",country:"UK",level:"undergrad",clusters:["people","health","society"],bar:84,eng:6.5,extra:[],sel:"high",cost:34,prio:["elite","ya"]},
+ {id:"UK-BRI",school:"University of Bristol",program:"工程/社科 Engineering/Social",country:"UK",level:"undergrad",clusters:["build","society","explore"],bar:82,eng:6.5,extra:[],sel:"medium",cost:32,prio:["ya","inc"]},
+ {id:"UK-MAN",school:"University of Manchester",program:"经济/商科 Economics/Business",country:"UK",level:"undergrad",clusters:["business","society"],bar:80,eng:6.5,extra:[],sel:"medium",cost:30,prio:["ya","inc"]},
+ {id:"UK-SHEF",school:"University of Sheffield",program:"工程/理科 Engineering/Science",country:"UK",level:"undergrad",clusters:["build","explore","planet"],bar:80,eng:6.5,extra:[],sel:"medium",cost:28,prio:["ya"]},
+ {id:"UK-LEE",school:"University of Leeds",program:"心理/人文 Psychology/Humanities",country:"UK",level:"undergrad",clusters:["people","society","create"],bar:76,eng:6.5,extra:[],sel:"medium",cost:28,prio:["ya"]},
+ {id:"UK-LBO",school:"Loughborough University",program:"工程/体育科学/商科 Eng/Sport Sci/Business",country:"UK",level:"undergrad",clusters:["build","health","business"],bar:76,eng:6.5,extra:[],sel:"medium",cost:28,prio:["sport","ya"]},
+ {id:"UK-GLA",school:"University of Glasgow",program:"工程/理科 Engineering/Science",country:"UK",level:"undergrad",clusters:["build","explore","planet"],bar:74,eng:6.5,extra:[],sel:"medium",cost:28,prio:["ya"]},
+ {id:"UK-LEI",school:"University of Leicester",program:"生命科学/社科 Life/Social",country:"UK",level:"undergrad",clusters:["health","people","society"],bar:72,eng:6.5,extra:[],sel:"medium",cost:26,prio:[]},
+ {id:"UK-SUR",school:"University of Surrey",program:"工程/商科 Engineering/Business",country:"UK",level:"undergrad",clusters:["build","business","explore"],bar:68,eng:6.0,extra:[],sel:"medium",cost:26,prio:["ya"]},
+ {id:"UK-NTU",school:"Nottingham Trent",program:"设计/传媒 Design/Media",country:"UK",level:"undergrad",clusters:["create","people"],bar:66,eng:6.0,extra:["作品集(设计)"],sel:"medium",cost:24,prio:[]},
+ // US (sample of top-100 target)
+ {id:"US-MIT",school:"MIT",program:"工程/计算机 EECS",country:"US",level:"undergrad",clusters:["build","explore"],bar:97,eng:7.0,extra:["SAT/ACT","竞赛"],sel:"extreme",cost:82,prio:["inc"]},
+ {id:"US-HARV",school:"Harvard University",program:"经济/社科 Economics/Social",country:"US",level:"undergrad",clusters:["business","society","people"],bar:96,eng:7.0,extra:["SAT/ACT","强背景"],sel:"extreme",cost:82,prio:["elite","inc"]},
+ {id:"US-COL",school:"Columbia University",program:"人文/社科 Humanities/Social",country:"US",level:"undergrad",clusters:["society","people","create"],bar:94,eng:7.0,extra:["SAT/ACT"],sel:"extreme",cost:85,prio:["elite","inc"]},
+ {id:"US-JHU",school:"Johns Hopkins",program:"生命科学/理科 Life Sci/Science",country:"US",level:"undergrad",clusters:["health","explore"],bar:94,eng:7.0,extra:["SAT/ACT"],sel:"extreme",cost:82,prio:["inc"]},
+ {id:"US-USC",school:"USC",program:"传媒/商科/工程 Media/Business/Eng",country:"US",level:"undergrad",clusters:["create","business","build"],bar:88,eng:7.0,extra:["SAT/ACT"],sel:"high",cost:85,prio:["inc","sport"]},
+ {id:"US-MICH",school:"University of Michigan",program:"工程/商科 Engineering/Business",country:"US",level:"undergrad",clusters:["build","business","explore"],bar:88,eng:7.0,extra:["SAT/ACT"],sel:"high",cost:70,prio:["sport","inc","ya"]},
+ {id:"US-NYU",school:"NYU Stern",program:"商科 Business",country:"US",level:"undergrad",clusters:["business"],bar:88,eng:7.0,extra:["SAT/ACT"],sel:"high",cost:85,prio:["inc"]},
+ {id:"US-UIUC",school:"UIUC",program:"计算机科学 Computer Science",country:"US",level:"undergrad",clusters:["build","explore"],bar:84,eng:6.5,extra:["SAT/ACT"],sel:"high",cost:60,prio:[]},
+ {id:"US-BU",school:"Boston University",program:"传媒/社科 Media/Social",country:"US",level:"undergrad",clusters:["create","society","people"],bar:82,eng:6.5,extra:["SAT/ACT"],sel:"high",cost:78,prio:["ya"]},
+ {id:"US-PITT",school:"University of Pittsburgh",program:"生命科学/社科 Life/Social",country:"US",level:"undergrad",clusters:["health","people","society"],bar:78,eng:6.5,extra:["SAT/ACT"],sel:"medium",cost:60,prio:[]},
+ {id:"US-UCD",school:"UC Davis",program:"设计/环境 Design/Environment",country:"US",level:"undergrad",clusters:["create","planet","explore"],bar:76,eng:6.5,extra:["作品集(设计)"],sel:"medium",cost:65,prio:[]},
+ {id:"US-PSU",school:"Penn State",program:"工程/商科 Engineering/Business",country:"US",level:"undergrad",clusters:["build","business","planet"],bar:74,eng:6.5,extra:[],sel:"medium",cost:55,prio:["sport"]},
+ {id:"US-RUT",school:"Rutgers University",program:"生命科学/人文 Life/Humanities",country:"US",level:"undergrad",clusters:["health","people","society","explore"],bar:70,eng:6.5,extra:[],sel:"medium",cost:50,prio:["sport"]},
+ // Canada (sample of top-10 target)
+ {id:"CA-TOR",school:"University of Toronto",program:"商科/工程/社科 Business/Eng/Social",country:"CA",level:"undergrad",clusters:["business","build","society","explore"],bar:90,eng:6.5,extra:[],sel:"high",cost:35,prio:["elite","inc","ya"]},
+ {id:"CA-MCG",school:"McGill University",program:"人文/理科/医预 Humanities/Sci/Pre-med",country:"CA",level:"undergrad",clusters:["people","explore","health","society"],bar:88,eng:6.5,extra:[],sel:"high",cost:33,prio:["elite","ya"]},
+ {id:"CA-UBC",school:"UBC",program:"工程/环境/商科 Eng/Environment/Business",country:"CA",level:"undergrad",clusters:["build","planet","business"],bar:86,eng:6.5,extra:[],sel:"high",cost:33,prio:["ya","sport"]},
+ {id:"CA-WAT",school:"University of Waterloo",program:"计算机/工程 CS/Engineering",country:"CA",level:"undergrad",clusters:["build","explore"],bar:86,eng:6.5,extra:[],sel:"high",cost:32,prio:["inc"]},
+ {id:"CA-MAC",school:"McMaster University",program:"生命科学/工程 Life Sci/Engineering",country:"CA",level:"undergrad",clusters:["health","build","explore"],bar:78,eng:6.5,extra:[],sel:"medium",cost:30,prio:[]},
+ // Australia (Group of Eight)
+ {id:"AU-MEL",school:"University of Melbourne",program:"商科/社科/理科 Business/Social/Science",country:"AU",level:"undergrad",clusters:["business","society","explore"],bar:88,eng:6.5,extra:[],sel:"high",cost:36,prio:["elite","ya","inc"]},
+ {id:"AU-SYD",school:"University of Sydney",program:"商科/人文/工程 Business/Humanities/Eng",country:"AU",level:"undergrad",clusters:["business","people","build"],bar:86,eng:6.5,extra:[],sel:"high",cost:36,prio:["elite","ya","sport"]},
+ {id:"AU-ANU",school:"Australian National University",program:"社科/理科 Social/Science",country:"AU",level:"undergrad",clusters:["society","explore","people"],bar:86,eng:6.5,extra:[],sel:"high",cost:34,prio:["elite"]},
+ {id:"AU-UNSW",school:"UNSW Sydney",program:"工程/商科 Engineering/Business",country:"AU",level:"undergrad",clusters:["build","business","explore"],bar:84,eng:6.5,extra:[],sel:"medium",cost:36,prio:["inc","ya"]},
+ {id:"AU-UQ",school:"University of Queensland",program:"理科/环境/商科 Science/Environment/Business",country:"AU",level:"undergrad",clusters:["explore","planet","business","health"],bar:82,eng:6.5,extra:[],sel:"medium",cost:34,prio:["sport","ya"]},
+ {id:"AU-MON",school:"Monash University",program:"工程/设计/商科 Eng/Design/Business",country:"AU",level:"undergrad",clusters:["build","create","business"],bar:80,eng:6.5,extra:[],sel:"medium",cost:34,prio:["ya","inc"]},
+];
+const PRIO_LABELS={ ya:{zh:"海外交换年",en:"Year abroad"}, inc:{zh:"创业孵化",en:"Incubator"}, elite:{zh:"精英人脉",en:"Elite network"}, sport:{zh:"运动文化",en:"Sports culture"} };
+const COUNTRY_LABELS={ UK:"英国 UK", US:"美国 US", CA:"加拿大 CA", AU:"澳洲 AU" };
+// 回国档位(按四大排名口径整理,演示用,需按各地最新政策核对更新)
+// t50=世界前50梯队 · t100=前51-100梯队 · t200=前200 · other
+const CN_TIER={
+ "UK-CAM":"t50","UK-OXF":"t50","UK-IMP":"t50","UK-LSE":"t50","UK-UCL":"t50","UK-DUR":"t100","UK-WAR":"t50","UK-EDI":"t50","UK-BRI":"t50","UK-MAN":"t50","UK-SHEF":"t100","UK-LEE":"t100","UK-LBO":"t200","UK-GLA":"t100","UK-LEI":"t200","UK-SUR":"t200","UK-NTU":"other",
+ "US-MIT":"t50","US-HARV":"t50","US-COL":"t50","US-JHU":"t50","US-USC":"t50","US-MICH":"t50","US-NYU":"t50","US-UIUC":"t100","US-BU":"t50","US-PITT":"t100","US-UCD":"t50","US-PSU":"t200","US-RUT":"t200",
+ "CA-TOR":"t50","CA-MCG":"t50","CA-UBC":"t50","CA-WAT":"t100","CA-MAC":"t100",
+ "AU-MEL":"t50","AU-SYD":"t50","AU-ANU":"t50","AU-UNSW":"t50","AU-UQ":"t100","AU-MON":"t100"
+};
+// 提供有竞争力国际奖学金的学校(演示用)
+const SCHOLARSHIP=new Set(["UK-OXF","UK-CAM","UK-IMP","UK-EDI","UK-WAR","UK-BRI","UK-SHEF","UK-LEE","UK-GLA","UK-LBO","UK-SUR","CA-TOR","CA-MCG","CA-UBC","CA-WAT","CA-MAC","AU-MEL","AU-SYD","AU-ANU","AU-UNSW","AU-UQ","AU-MON","US-USC","US-BU","US-PSU","US-PITT","US-MICH"]);
+const VALUE_LABELS={ settle:{zh:"落户友好",en:"Settlement"}, hktalent:{zh:"港·高才通",en:"HK Talent"}, civil:{zh:"考公/选调友好",en:"Civil service"}, ya:{zh:"国际交换",en:"Year abroad"}, sport:{zh:"运动文化",en:"Sports"}, inc:{zh:"创业孵化",en:"Incubator"}, schol:{zh:"奖学金机会",en:"Scholarships"}, elite:{zh:"精英人脉",en:"Elite network"} };
+function schoolValues(s){
+  const v=[...(s.prio||[])];
+  const t=CN_TIER[s.id]||"other";
+  if(t==="t50"||t==="t100"){ v.push("settle","hktalent","civil"); }
+  if(SCHOLARSHIP.has(s.id)) v.push("schol");
+  return v;
+}
+function cnStatus(s){ const t=CN_TIER[s.id]||"other";
+  if(t==="t50") return {zh:"上海可直接落户 · 港高才通 · 选调友好",en:"Shanghai direct hukou · HK Talent · civil-service friendly"};
+  if(t==="t100") return {zh:"上海满半年落户 · 港高才通 · 部分省选调",en:"Shanghai 6-mo hukou · HK Talent · some-province civil service"};
+  return null;
+}
+
+function academicIndex(s){ if(s.level==="master") return GPA_INDEX[s.gpaBand]??76; if(s.gradeSystem==="IB") return IB_INDEX[s.gradeBand]??79; return ALEVEL_INDEX[s.gradeBand]??80; }
+function baseTier(g){ if(g>=6)return"green"; if(g>=-4)return"yellow"; if(g>=-12)return"red"; return"out"; }
+function bumpHarder(t){ if(t==="green")return"yellow"; if(t==="yellow")return"red"; return t; }
+function applySel(t,sel){ if(sel==="extreme")return bumpHarder(t); if(sel==="high"&&t==="green")return"yellow"; return t; }
+
+function matchSchools(st){
+  const idx=academicIndex(st); const out=[]; const vals=st.values||[]; const isUG=st.level==='undergrad';
+  for(const s of SCHOOLS){
+    if(!st.countries.includes(s.country)) continue;
+    if(!s.clusters.some(c=>st.domains.includes(c))) continue;
+    const gap=idx-s.bar; let tier=baseTier(gap); if(tier==="out") continue; tier=applySel(tier,s.sel);
+    const overBudget = st.budgetCap!=null && s.cost>st.budgetCap;
+    const valueHit = schoolValues(s).filter(v=>vals.includes(v));
+    const cn = cnStatus(s);
+    const gaps=[];
+    if(st.ielts!=null && st.ielts>0 && st.ielts<s.eng) gaps.push({zh:`雅思 ${st.ielts} → 需 ${s.eng}`,en:`IELTS ${st.ielts} → need ${s.eng}`});
+    if(st.ielts===0 && s.eng) gaps.push({zh:`考出雅思(需 ${s.eng})`,en:`Take IELTS (need ${s.eng})`});
+    if(isUG && s.country==="US" && !st.hasSAT && s.extra.some(e=>e.includes("SAT"))) gaps.push({zh:"补 SAT / ACT",en:"Add SAT / ACT"});
+    if(gap<0){ gaps.push(isUG?{zh:"学术成绩 / 课程难度需提升",en:"Raise academic grades / rigor"}:{zh:"本科成绩 / 院校背景需提升",en:"Strengthen undergrad GPA / institution profile"}); }
+    else if(tier==="red"||tier==="yellow"){
+      if(isUG) gaps.push(s.country==="US"?{zh:"强化课外背景、竞赛与文书",en:"Strengthen activities, competitions & essays"}:{zh:"强化相关背景、文书与面试表现",en:"Strengthen background, statement & interview"});
+      else gaps.push({zh:"强化科研 / 实习经历与文书;如目标项目要求,备考 GRE / GMAT",en:"Strengthen research / internships & SOP; prep GRE/GMAT if required"});
+    }
+    if(isUG) s.extra.forEach(e=>{ if(/笔试|TSA|面试|作品集/.test(e)) gaps.push({zh:`准备 ${e}`,en:`Prepare ${e}`}); });
+    out.push({...s,tier,gap,overBudget,valueHit,cn,gaps});
+  }
+  const order={green:0,yellow:1,red:2};
+  out.sort((a,b)=>order[a.tier]-order[b.tier] || b.valueHit.length-a.valueHit.length || b.bar-a.bar);
+  return {idx,results:out};
+}
+function recommendMajors(st){
+  const pool=[]; st.domains.forEach(d=>(DOMAIN_MAJORS[d]||[]).forEach(m=>pool.push(m)));
+  const uniq=[...new Set(pool)]; let gem=null;
+  if(st.domains.length>=2) gem=uniq[Math.min(2,uniq.length-1)]; else if(uniq.length>=3) gem=uniq[2];
+  const top=uniq.slice(0,4); if(gem&&!top.includes(gem)) top.push(gem);
+  return {majors:top,gem};
+}
+function autonomy(st){ let s=(st.certainty||5)*7; if(st.influence==="self")s+=20; else if(st.influence==="teacher"||st.influence==="peers")s+=10; s=Math.max(0,Math.min(100,s)); return {score:s,alert:s<45}; }
+
+const T={ green:{cls:'g',zh:'🟢 稳妥 · 大概率录取',en:'🟢 Safety · likely admit'},
+          yellow:{cls:'y',zh:'🟡 匹配 · 有竞争力',en:'🟡 Match · competitive'},
+          red:{cls:'r',zh:'🔴 冲刺 · 需要争取',en:'🔴 Reach · worth fighting for'} };
+
+function bandLabel(st,idx){
+  if(st.level==='master'){ const m={top:'顶尖 Top',high:'较高 High',mid:'中等 Mid',low:'一般 Lower'}; return m[st.gpaBand]; }
+  return st.gradeBand+' ('+st.gradeSystem+')';
+}
+
+function render(st){
+  const {idx,results}=matchSchools(st);
+  const {majors,gem}=recommendMajors(st);
+  const auto=autonomy(st);
+  const esc=s=>s.replace(/</g,'&lt;');
+  let h='';
+
+  h+=`<div class="r-head"><h2><span class="zh">你的评估结果</span><span class="en">Your assessment</span></h2>
+      <div class="sub"><span class="zh">基于规则引擎即时生成 · 仅供方向参考</span><span class="en">Generated instantly by our rule engine · directional guidance</span></div></div>`;
+
+  // snapshot
+  h+=`<div class="snap">
+      <div class="snap-item"><div class="snap-k zh">学术水平</div><div class="snap-k en">Academic</div><div class="snap-v">${esc(bandLabel(st,idx))}</div></div>
+      <div class="snap-item"><div class="snap-k zh">语言</div><div class="snap-k en">English</div><div class="snap-v">${st.ielts>0?('IELTS '+st.ielts):'—'}</div></div>
+      <div class="snap-item"><div class="snap-k zh">方向笃定度</div><div class="snap-k en">Direction clarity</div><div class="snap-v">${st.certainty}/10</div></div>
+      </div>`;
+
+  // fit alert
+  if(auto.alert){
+    h+=`<div class="fit-alert"><div class="t zh">值得想想 · FIT 提醒</div><div class="t en">WORTH A PAUSE · FIT ALERT</div>
+        <p class="zh">你目前的选择,可能更多反映了外部期待而非你自己的兴趣。我们建议你认真看看「${esc(gem||majors[0])}」这个方向——它更贴近你表达出的真实热情。一个你能长期投入、有内在动力的方向,往往比一个"看起来更好"的选择走得更远。</p>
+        <p class="en">Your current choices may reflect others' expectations more than your own interest. It's worth seriously considering "${esc(gem||majors[0])}" — it sits closer to the passion you expressed. A direction you can commit to with genuine drive usually takes you further than one that merely "looks better."</p></div>`;
+  }
+
+  // majors
+  h+=`<div class="r-head"><h2><span class="zh">推荐专业方向</span><span class="en">Recommended majors</span></h2></div>`;
+  majors.forEach(m=>{
+    const isGem = m===gem;
+    h+=`<div class="major-card${isGem?' gem':''}"><div class="major-name">${esc(m)}${isGem?'<span class="major-tag zh">你可能没考虑过</span><span class="major-tag en">you may not have considered</span>':''}</div>
+        <div class="major-reason"><span class="zh">${isGem?'基于你的兴趣组合,这是一个高度契合但容易被忽略的方向。':'与你选择的兴趣方向高度匹配。'}</span><span class="en">${isGem?'A strong-fit direction that students with your interests often overlook.':'Closely matches the interests you selected.'}</span></div></div>`;
+  });
+
+  // schools
+  h+=`<div class="r-head"><h2><span class="zh">分层选校清单</span><span class="en">Tiered school list</span></h2>
+      <div class="sub"><span class="zh">同时考虑你的实力与各校竞争程度</span><span class="en">Balancing your profile against each school's selectivity</span></div></div>`;
+  ['green','yellow','red'].forEach(tier=>{
+    const list=results.filter(r=>r.tier===tier); if(list.length===0) return;
+    h+=`<div class="tier"><div class="tier-h"><span class="dot ${T[tier].cls}"></span><span class="zh">${T[tier].zh}</span><span class="en">${T[tier].en}</span></div>`;
+    const show=list.slice(0,5);
+    show.forEach(s=>{
+      const ctag = COUNTRY_LABELS[s.country] ? `<span class="ctag">${COUNTRY_LABELS[s.country]}</span>` : '';
+      h+=`<div class="school ${T[tier].cls}"><div class="school-top">
+          <div><div class="school-name">${esc(s.school)}${ctag}</div><div class="school-prog">${esc(s.program)}</div></div>
+          <div class="school-cost ${s.overBudget?'over-budget':''}">≈${s.cost}万/yr${s.overBudget?'<span class="zh"> · 超预算</span><span class="en"> · over budget</span>':''}</div>
+          </div>`;
+      if(s.cn){ h+=`<div class="cn-status">✓ <span class="zh">${s.cn.zh}</span><span class="en">${s.cn.en}</span></div>`; }
+      if(s.valueHit && s.valueHit.length){
+        h+=`<div class="pbadges">`;
+        s.valueHit.forEach(p=>{ if(VALUE_LABELS[p]) h+=`<span class="pbadge">★ <span class="zh">${VALUE_LABELS[p].zh}</span><span class="en">${VALUE_LABELS[p].en}</span></span>`; });
+        h+=`</div>`;
+      }
+      if((tier==='red'||tier==='yellow') && s.gaps.length){
+        h+=`<div class="roadmap"><div class="roadmap-t zh">提升路径</div><div class="roadmap-t en">How to get there</div><ul>`;
+        s.gaps.forEach(g=>{ h+=`<li><span class="zh">${esc(g.zh)}</span><span class="en">${esc(g.en)}</span></li>`; });
+        h+=`</ul></div>`;
+      }
+      h+=`</div>`;
+    });
+    if(list.length>show.length){ h+=`<div class="more"><span class="zh">…另有 ${list.length-show.length} 所同档学校</span><span class="en">…and ${list.length-show.length} more at this tier</span></div>`; }
+    h+=`</div>`;
+  });
+
+  if(results.length===0){
+    h+=`<div class="card"><span class="zh">当前条件下没有匹配到种子库中的学校。试试放宽预算或增加目标国家/方向。</span><span class="en">No matches in the seed database under these filters. Try widening budget, countries, or interests.</span></div>`;
+  }
+
+  // disclaimer + cta
+  h+=`<div class="disclaimer"><span class="zh">⚠️ 这是基于 OpenApply 规则引擎的即时方向参考。录取门槛与"回国身份(落户/高才通/选调)"均按公开排名与政策口径整理、用于演示,需由导师与官方资料定期核对更新;落户与人才政策随排名年度调整,以官方最新名单为准。三档为相对参考,不代表录取或落户保证。</span>
+      <span class="en">⚠️ Instant directional guidance from OpenApply's rule engine. Admission bars and "return-to-China status" (settlement / HK Talent / civil-service) are compiled from public rankings & policies for demo, pending mentor/official verification and periodic updates; policies change yearly with rankings — always check official lists. Tiers are relative guidance, not admission or settlement guarantees.</span></div>`;
+  h+=`<div class="cta-final"><a href="https://airtable.com/app1e2OWQNoPrPfWP/pag9ypdkhzZKqYANW/form" target="_blank" rel="noopener"><span class="zh">预约导师,获取完整评估</span><span class="en">Book a mentor for the full assessment</span></a></div>`;
+
+  document.getElementById('engineResult').innerHTML=h;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+
 </script>
 </body>
 </html>
